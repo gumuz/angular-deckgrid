@@ -312,9 +312,14 @@ angular.module('akoenig.deckgrid').factory('Deckgrid', [
                                    'https://github.com/akoenig/angular-deckgrid#the-grid-configuration)');
             }
 
-            this.$$scope.columns = [];
+            if(!this.$$scope.columns) {
+                this.$$scope.columns = [];
+            }
 
             angular.forEach(this.$$scope.model, function onIteration (card, index) {
+                if(!card['new']) {
+                    return;
+                }
                 var column = (index % self.$$scope.layout.columns) | 0;
 
                 if (!self.$$scope.columns[column]) {
@@ -323,6 +328,7 @@ angular.module('akoenig.deckgrid').factory('Deckgrid', [
 
                 card.$index = index;
                 self.$$scope.columns[column].push(card);
+                delete card['new'];
             });
         };
 
