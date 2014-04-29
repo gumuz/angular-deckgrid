@@ -141,6 +141,7 @@ angular.module('akoenig.deckgrid').factory('Deckgrid', [
          */
         Deckgrid.prototype.$$createColumns = function $$createColumns () {
             var self = this;
+            self.seen = self.seen || {};
 
             if (!this.$$scope.layout) {
                 return $log.error('angular-deckgrid: No CSS configuration found (see ' +
@@ -152,7 +153,7 @@ angular.module('akoenig.deckgrid').factory('Deckgrid', [
             }
 
             angular.forEach(this.$$scope.model, function onIteration (card, index) {
-                if(!card['new']) {
+                if(card["id"] && self.seen[card["id"]]) {
                     return;
                 }
                 var column = (index % self.$$scope.layout.columns) | 0;
@@ -163,7 +164,10 @@ angular.module('akoenig.deckgrid').factory('Deckgrid', [
 
                 card.$index = index;
                 self.$$scope.columns[column].push(card);
-                delete card['new'];
+                
+                if(card["id"]) {
+                    self.seen[card["id"]] = true;
+                }
             });
         };
 
